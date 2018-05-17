@@ -163,7 +163,8 @@ function networkUp () {
     exit 1
   fi
   # now run the end to end script
-  docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
+  docker exec hapit scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
+  #docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Test failed"
     exit 1
@@ -193,8 +194,10 @@ function upgradeNetwork () {
   fi
 
   # removing the cli container
-  docker-compose $COMPOSE_FILES stop cli
-  docker-compose $COMPOSE_FILES up -d --no-deps cli
+  docker-compose $COMPOSE_FILES stop hapit
+  #docker-compose $COMPOSE_FILES stop cli
+  docker-compose $COMPOSE_FILES up -d --no-deps hapit
+  #docker-compose $COMPOSE_FILES up -d --no-deps cli
 
   echo "Upgrading orderer"
   docker-compose $COMPOSE_FILES stop orderer.example.com
