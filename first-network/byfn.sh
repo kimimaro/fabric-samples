@@ -435,9 +435,9 @@ CLI_TIMEOUT=10
 # default for delay between commands
 CLI_DELAY=3
 # channel name defaults to "mychannel"
-CHANNEL_NAME="mychannel"
+CHANNEL_NAME="hapit-channel"
 # use this as the default docker-compose yaml definition
-COMPOSE_FILE=docker-compose-cli.yaml
+COMPOSE_FILE=docker-compose-hapit.yaml
 #
 COMPOSE_FILE_COUCH=docker-compose-couch.yaml
 # use golang as the default language for chaincode
