@@ -53,7 +53,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	const request = {
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'hapit',
-		fcn: 'queryCar',
+		fcn: 'queryHabit',
 		args: ['CAR0']
 	};
 
