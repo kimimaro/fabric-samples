@@ -61,8 +61,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	var request = {
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'hapit',
-		fcn: 'createHabit',
-		args: ['HAPIT10', 'Meditation', 'Self-Improvement', 'Kimi', 'Ruby', '10'],
+		fcn: 'changeHabitOwner',
+		args: ['HABIT5', 'Rocky'],
 		chainId: 'mychannel',
 		txId: tx_id
 	};

@@ -42,17 +42,12 @@ import (
 type SmartContract struct {
 }
 
-// Define the habit structure, with 4 properties.  Structure tags are used by encoding/json library
-type Habit struct {
-	Name      string   `json:"name"`
-	Type      string   `json:"type"`
-	Attendees []string `json:"attendees"`
-	Owner     string   `json:"owner"`
-}
-
-type Person struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+// Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
+type Car struct {
+	Make   string `json:"make"`
+	Model  string `json:"model"`
+	Colour string `json:"colour"`
+	Owner  string `json:"owner"`
 }
 
 /*
@@ -69,27 +64,27 @@ func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
  */
 func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
 
+	fmt.Println('fabcar invoke =============================================================')
+
 	// Retrieve the requested Smart Contract function and arguments
 	function, args := APIstub.GetFunctionAndParameters()
 	// Route to the appropriate handler function to interact with the ledger appropriately
-	if function == "queryHabit" {
-		return s.queryHabit(APIstub, args)
-	} else if function == "initLedger" {
-		return s.initLedger(APIstub)
-	} else if function == "createHabit" {
-		return s.createHabit(APIstub, args)
-	} else if function == "queryAllHabits" {
-		return s.queryAllHabits(APIstub)
-	} else if function == "changeHabitOwner" {
-		return s.changeHabitOwner(APIstub, args)
-	} else if function == "changeHabitAttendees" {
-		return s.changeHabitAttendees(APIstub, args)
+	if function == "queryCar" {
+		return s.queryCar(APIstub, args)
+		// } else if function == "initLedger" {
+		// 	return s.initLedger(APIstub)
+	} else if function == "createCar" {
+		return s.createCar(APIstub, args)
+	} else if function == "queryAllCars" {
+		return s.queryAllCars(APIstub)
+	} else if function == "changeCarOwner" {
+		return s.changeCarOwner(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
 }
 
-func (s *SmartContract) queryHabit(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
@@ -100,57 +95,49 @@ func (s *SmartContract) queryHabit(APIstub shim.ChaincodeStubInterface, args []s
 }
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
-	habits := []Habit{
-		Habit{Name: "Running", Type: "Health", Attendees: []string{"Ruby", "Kathy"}, Owner: "Kathy"},
-		Habit{Name: "English", Type: "Learning", Attendees: []string{"Kathy"}, Owner: "Kathy"},
-		Habit{Name: "Workout", Type: "Health", Attendees: []string{"Kimi", "Rocky"}, Owner: "Kimi"},
-		Habit{Name: "bark", Type: "Nature", Attendees: []string{"Ruby", "Rocky"}, Owner: "Rocky"},
-		Habit{Name: "Blockchain", Type: "Learning", Attendees: []string{"Kimi", "Ruby", "Rocky"}, Owner: "Kimi"},
-	}
-
-	people := []Person{
-		Person{Name: "Kimi", Age: 29},
-		Person{Name: "Kathy", Age: 28},
-		Person{Name: "Ruby", Age: 5},
-		Person{Name: "Rocky", Age: 3},
+	cars := []Car{
+		Car{Make: "Toyota00", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
+		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
+		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
+		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
+		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
+		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
+		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
+		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
+		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
+		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
 	}
 
 	i := 0
-	for i < len(habits) {
-		habitAsBytes, _ := json.Marshal(habits[i])
-		APIstub.PutState("HABIT"+strconv.Itoa(i), habitAsBytes)
+	for i < len(cars) {
+		fmt.Println("i is ", i)
+		carAsBytes, _ := json.Marshal(cars[i])
+		APIstub.PutState("CAR"+strconv.Itoa(i), carAsBytes)
+		fmt.Println("Added", cars[i])
 		i = i + 1
-	}
-
-	j := 0
-	for j < len(people) {
-		personAsBytes, _ := json.Marshal(people[j])
-		APIstub.PutState("PERSON"+strconv.Itoa(j), personAsBytes)
-		j = j + 1
 	}
 
 	return shim.Success(nil)
 }
 
-func (s *SmartContract) createHabit(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 5 {
 		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
-	attendees := []string{args[3]}
-	var habit = Habit{Name: args[1], Type: args[2], Attendees: attendees, Owner: args[4]}
+	var car = Car{Make: args[1], Model: args[2], Colour: args[3], Owner: args[4]}
 
-	habitAsBytes, _ := json.Marshal(habit)
-	APIstub.PutState(args[0], habitAsBytes)
+	carAsBytes, _ := json.Marshal(car)
+	APIstub.PutState(args[0], carAsBytes)
 
 	return shim.Success(nil)
 }
 
-func (s *SmartContract) queryAllHabits(APIstub shim.ChaincodeStubInterface) sc.Response {
+func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
 
-	startKey := "HABIT0"
-	endKey := "HABIT999"
+	startKey := "CAR0"
+	endKey := "CAR999"
 
 	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err != nil {
@@ -185,43 +172,25 @@ func (s *SmartContract) queryAllHabits(APIstub shim.ChaincodeStubInterface) sc.R
 	}
 	buffer.WriteString("]")
 
+	fmt.Printf("- queryAllCars:\n%s\n", buffer.String())
+
 	return shim.Success(buffer.Bytes())
 }
 
-func (s *SmartContract) changeHabitOwner(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
-	habitAsBytes, _ := APIstub.GetState(args[0])
-	habit := Habit{}
+	carAsBytes, _ := APIstub.GetState(args[0])
+	car := Car{}
 
-	json.Unmarshal(habitAsBytes, &habit)
-	habit.Owner = args[1]
+	json.Unmarshal(carAsBytes, &car)
+	car.Owner = args[1]
 
-	habitAsBytes, _ = json.Marshal(habit)
-	APIstub.PutState(args[0], habitAsBytes)
-
-	return shim.Success(nil)
-}
-
-func (s *SmartContract) changeHabitAttendees(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-
-	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
-	}
-
-	habitAsBytes, _ := APIstub.GetState(args[0])
-	habit := Habit{}
-
-	json.Unmarshal(habitAsBytes, &habit)
-
-	attendees := append(habit.Attendees, args[1])
-	habit.Attendees = attendees
-
-	habitAsBytes, _ = json.Marshal(habit)
-	APIstub.PutState(args[0], habitAsBytes)
+	carAsBytes, _ = json.Marshal(car)
+	APIstub.PutState(args[0], carAsBytes)
 
 	return shim.Success(nil)
 }
